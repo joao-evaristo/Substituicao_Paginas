@@ -6,9 +6,6 @@
 #define BITS 8
 #define TRUE 1
 #define FALSE 0
-#define MV_SIZE 10
-#define MS_SIZE 5
-#define MR_SIZE 5
 
 typedef struct Page {
   int id;
@@ -28,10 +25,8 @@ void fillBits(int *bits) {
 }
 
 Page buildPage(int id) {
-  int i;
   Page page;
   fillBits(page.bits);
-
   page.id = id;
   return page;
 }
@@ -55,7 +50,7 @@ void printMemory(Page *memoryList, int length) {
   }
 }
 
-int findPage(Page *MR, int id) {
+int findPage(Page *MR, int MR_SIZE, int id) {
     int i;
     for (i = 0; i < MR_SIZE; i++) {
         if (MR[i].id == id) {
@@ -103,7 +98,7 @@ void updateBits(Page *mem, int len, int id) {
   }
 }
 
-void swapPage(Page *MR, Page *MS, int id_page){
+void swapPage(Page *MR, Page *MS, int MR_SIZE, int MS_SIZE, int id_page){
   int i;
   int oldest = 255;
   int oldest_index = 0;
