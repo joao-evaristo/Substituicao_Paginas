@@ -1,47 +1,44 @@
 #include "page.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <math.h>
+#include <time.h>
 #define ITERATIONS 10
 
-void fillMemory(Page *MR[], Page *MS[], Page *MV[]) {
+void fillMemory(Page MR[], Page MS[]) {
   int i;
-  for (i = 0; i < (MR_SIZE + MS_SIZE); i++) {
-    Page *page = buildPage(i);
-    if (i < MR_SIZE) {
-      page->isInMemory = TRUE;
-      MR[i] = page;
-    } else {
-      page->isInMemory = FALSE;
-      MS[i] = page;
-    }
+  for (i = 0; i < MR_SIZE; i++) {
+      MR[i] = buildPage(i);
+  }
 
-    MV[i] = page;
+  for (i = MR_SIZE; i < (MR_SIZE + MS_SIZE); i++) {
+      MS[i - MR_SIZE] = buildPage(i);
   }
 }
 
 int main(int argc, char **argv) {
-  Page *MV[MV_SIZE];
-  Page *MS[MS_SIZE];
-  Page *MR[MR_SIZE];
+  Page MS[MS_SIZE];
+  Page MR[MR_SIZE];
   int i;
-  fillMemory(MR, MS, MV);
-  printf("MV\n");
-  printMemory(MV, MV_SIZE);
-  printf("MS\n");  
-  printMemory(MS, MS_SIZE);
-  printf("MR\n");
+  fillMemory(MR, MS);
+  printf("Memória Real:\n");  
   printMemory(MR, MR_SIZE);
-
-  /*for (i = 0; i < ITERATIONS; i++) {
-    int random = rand() % (MR_SIZE + MS_SIZE);
-    int inMemory = searchPageList(MV, random);
+  printf("Memória de Swap:\n");
+  printMemory(MS, MS_SIZE);
+  srand(time(NULL));
+  for (i = 0; i < ITERATIONS; i++) {  
+    int randomId = rand() % (MR_SIZE + MS_SIZE);
+    printf("%d\n", randomId);
+    int inMemory = findPage(MR, randomId);
     if (inMemory) {
       printf("FOUND IN MEMORY\n");
-      updateBits(MV, random);
+      updateBits(MR, MR_SIZE, randomId);
     } else {
-      swapPages(MV, MS, random);
+      swapPage(MR, MS, randomId);
+      updateBits(MR, MR_SIZE, randomId);
+      printf("FAZER SWAP\n");
     }
-  }*/
+    printMemory(MR, MR_SIZE);
+  }
   return 0;
 }
